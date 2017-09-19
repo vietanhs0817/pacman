@@ -3,6 +3,7 @@ package com.vietanh.pacman.ui;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -24,14 +25,15 @@ public class PacmanUI extends Canvas implements Runnable, KeyListener {
 	public static Player player;
 	private boolean isRunning = false;
 	public static Level level;
-	
+	private String fpsString = "0";
+	private int index = 59;
 	public PacmanUI() {
 		Dimension dimension = new Dimension(CommonConst.FRAME_WIDTH, CommonConst.FRAME_HEIGHT);
 		setPreferredSize(dimension);
 		setMaximumSize(dimension);
 		setMinimumSize(dimension);
 		addKeyListener(this);
-		player = new Player(32*9, 7*32);
+		player = new Player(32*9, 9*32);
 		level = new Level("res/map.png");
 	}
 
@@ -57,7 +59,7 @@ public class PacmanUI extends Canvas implements Runnable, KeyListener {
 	private void tick() {
 		player.tick();
 	}
-
+	
 	private void render() {
 		BufferStrategy bs = getBufferStrategy();
 		if (bs == null) {
@@ -68,8 +70,17 @@ public class PacmanUI extends Canvas implements Runnable, KeyListener {
 
 		g.setColor(Color.black);
 		g.fillRect(0, 0, CommonConst.FRAME_WIDTH, CommonConst.FRAME_HEIGHT);
-		player.render(g);
+		index ++;
+		if(index > 29) {
+			index = 0;
+		}
+		
+		
 		level.render(g);
+		player.render(g,index);
+		g.setFont(new Font("Arial" , Font.ITALIC, 21));
+		g.setColor(Color.GREEN);
+		g.drawString(fpsString, 0, 21);
 		g.dispose();
 		bs.show();
 	}
@@ -97,7 +108,7 @@ public class PacmanUI extends Canvas implements Runnable, KeyListener {
 			}
 
 			if (System.currentTimeMillis() - timer >= 1000) {
-				System.out.println(fps);
+				this.fpsString = fps + " fps";
 				fps = 0;
 				timer += 1000;
 			}
@@ -157,14 +168,14 @@ public class PacmanUI extends Canvas implements Runnable, KeyListener {
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_UP)
-			player.up = false;
-		if (e.getKeyCode() == KeyEvent.VK_DOWN)
-			player.down = false;
-		if (e.getKeyCode() == KeyEvent.VK_LEFT)
-			player.left = false;
-		if (e.getKeyCode() == KeyEvent.VK_RIGHT)
-			player.right = false;
+//		if (e.getKeyCode() == KeyEvent.VK_UP)
+//			player.up = false;
+//		if (e.getKeyCode() == KeyEvent.VK_DOWN)
+//			player.down = false;
+//		if (e.getKeyCode() == KeyEvent.VK_LEFT)
+//			player.left = false;
+//		if (e.getKeyCode() == KeyEvent.VK_RIGHT)
+//			player.right = false;
 
 	}
 

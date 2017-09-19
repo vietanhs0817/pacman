@@ -11,7 +11,7 @@ public class Level {
 	public int height;
 
 	public BufferedImage[][] titles;
-	public int[][] maps;
+	public Food[][] foods;
 
 	public boolean isTransparent(int x, int y, BufferedImage img) {
 		int pixel = img.getRGB(x, y);
@@ -19,6 +19,7 @@ public class Level {
 			return true;
 		}
 		return false;
+
 	}
 
 	public boolean isTransparentFull(BufferedImage img) {
@@ -35,18 +36,24 @@ public class Level {
 	public Level(String path) {
 		try {
 			BufferedImage map = ImageIO.read(new File(path));
+
+			BufferedImage foodImage = ImageIO.read(new File("res/food.png"));
 			width = map.getWidth();
 			height = map.getHeight();
 			int cols = 20;
 			int rows = 15;
 			titles = new BufferedImage[cols][rows];
-			maps = new int[cols][rows];
-
+			foods = new Food[cols][rows];
 			for (int xx = 0; xx < cols; xx++) {
 				for (int yy = 0; yy < rows; yy++) {
-
 					titles[xx][yy] = map.getSubimage(xx * 32, yy * 32, 32, 32);
-
+					if (isTransparentFull(titles[xx][yy])) {
+						if ((xx == 9 && yy == 9) || (xx >= 7 && xx <= 11 && yy >= 0 && yy <= 3) ) {
+							
+						}else {
+							foods[xx][yy] = new Food(xx * 32, yy * 32, foodImage);
+						}
+					}
 				}
 			}
 
@@ -59,6 +66,9 @@ public class Level {
 		for (int x = 0; x < 20; x++) {
 			for (int y = 0; y < 15; y++) {
 				g.drawImage(titles[x][y], x * 32, y * 32, null);
+				if (foods[x][y] != null) {
+					foods[x][y].render(g);
+				}
 			}
 		}
 	}
